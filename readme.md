@@ -55,16 +55,16 @@ D4CG Unit tests notes: https://docs.google.com/document/d/1jzE2blGkrQ1Rj2rkOfBZ7
 
   - Visualization of Jenkins pipeline
 
-    ![img](https://lh7-rt.googleusercontent.com/docsz/AD_4nXcUsd1w1vZ2MGTCh3hkTX1RLz-zHn4l8EGpw1r44Ex0YZTsU6lQgrSHnZmOkHsq2MAxCUxXFmlaTkoWh2pzjyolaIX6EDCcdINU9KEF1EZUKdLVO4CH_eTiWghkGhHCD3GxK8pOZ9eAYSqJz9iQ6E_KAnVy?key=xwJYBXB4pC_YGnDwfJIXkw)
+    ![img](./images/jenkins-pipeline-visualization.png)
 
 
 ## Architecture
 
-###### <img src="/Users/qwb/Library/Application Support/typora-user-images/image-20240822183244612.png" alt="image-20240822183244612" style="zoom: 67%;" />
+###### <img src="./images/jenkins-architecture.png" alt="jenkins-architecture" style="zoom: 200%;" />
 
 ## Workflow
 
-<img src="/Users/qwb/Library/Application Support/typora-user-images/image-20240822185944559.png" alt="image-20240822185944559" style="zoom: 67%;" />
+<img src="./images/jenkins-workflow.png" alt="jenkins-workflow" style="zoom: 200%;" />
 
 ## How to stand it up / run
 
@@ -146,7 +146,7 @@ Availability: Keep this agent online as much as possible
 
 Wait for a minute, and the node is successfully connected if you see info below in **Log**.
 
-<img src="/Users/qwb/Library/Application Support/typora-user-images/image-20240822192653412.png" alt="image-20240822192653412" style="zoom:50%;" />
+<img src="./images/connect-to-slave-node.png" alt="image-20240822192653412" style="zoom: 200%;" />
 
 **Important** **Note:** To enable Jenkins use `kubectl ` command in the portal-dev, make sure kubeconfig file exists in path `~/.kube/config`.
 
@@ -158,7 +158,7 @@ Wait for a minute, and the node is successfully connected if you see info below 
 
 ​	Click **Dashboard** -> **pipelinename** -> **Build Now**
 
-<img src="/Users/qwb/Library/Application Support/typora-user-images/image-20240822194717875.png" alt="image-20240822194717875" style="zoom:50%;" />
+<img src="./images/jenkins-manually-run.png" alt="image-20240822194717875" style="zoom:50%;" />
 
 - #### Trigger by webhook
 
@@ -175,7 +175,7 @@ Click Dashboard -> pipeline_name -> Configuration. Groovy script defining jenkin
 
 **Note**: scripts are all stored in slave node, Jenkins just invokes them.
 
-<img src="/Users/qwb/Library/Application Support/typora-user-images/image-20240822195533604.png" alt="image-20240822195533604" style="zoom:50%;" />
+<img src="./images/jenkins-change-pipeline.png" alt="image-20240822195533604" style="zoom:50%;" />
 
 ------
 
@@ -183,47 +183,45 @@ Click Dashboard -> pipeline_name -> Configuration. Groovy script defining jenkin
 
 - #### Github CI/CD configuration
 
-  1. Click `Pipeline Syntax`
+  1.Click `Pipeline Syntax`
 
-​	<img src="/Users/qwb/Library/Application Support/typora-user-images/image-20240822231923203.png" alt="image-20240822231923203" style="zoom:50%;" />
+​	<img src="./images/jenkin-github-configuraition-1.png" alt="image-20240822231923203" style="zoom:50%;" />
 
-​	2. Configure github URL, credential, and branch
+​		2. Configure github URL, credential, and branch
 
-<img src="/Users/qwb/Library/Application Support/typora-user-images/image-20240822232307286.png" alt="image-20240822232307286" style="zoom:50%;" />
+<img src="./images/jenkins-github-configuration-2.png" alt="image-20240822232307286" style="zoom:50%;" />
 
 ​	3. Generate script
 
-<img src="/Users/qwb/Library/Application Support/typora-user-images/image-20240822232525421.png" alt="image-20240822232525421" style="zoom:50%;" />
+<img src="./images/jenkins-github-configuration-3.png" alt="image-20240822232525421" style="zoom:50%;" />
 
 ​	4. Copy step 3 script into pipeline and enable triggering
 
-<img src="/Users/qwb/Library/Application Support/typora-user-images/image-20240822233108370.png" alt="image-20240822233108370" style="zoom:50%;" />
+<img src="./images/jenkins-github-configuration-4.png" alt="image-20240822233108370" style="zoom:50%;" />
 
 - #### Email notification
 
 - How to add an email recipient and change content
 
-  <img src="/Users/qwb/Library/Application Support/typora-user-images/image-20240822235937496.png" alt="image-20240822235937496" style="zoom:50%;" />
+  <img src="./images/jenkins-email-configuration-1.png" alt="image-20240822235937496" style="zoom:50%;" />
 
-  <img src="/Users/qwb/Library/Application Support/typora-user-images/image-20240823000022256.png" alt="image-20240823000022256" style="zoom:50%;" />
-
-  <img src="/Users/qwb/Library/Application Support/typora-user-images/image-20240822235749576.png" alt="image-20240822235749576" style="zoom:67%;" />
+  <img src="./images/jenkins-email-configuration-2.png" alt="image-20240822235749576" style="zoom:67%;" />
 
 - #### Jenkins remote trigger
 
 ​	1. Enable building remotely trigger and set URL token
 
-<img src="/Users/qwb/Library/Application Support/typora-user-images/image-20240822233524213.png" alt="image-20240822233524213" style="zoom:50%;" />
+<img src="./images/jenkins-remote-trigger-1.png" alt="image-20240822233524213" style="zoom:50%;" />
 
 ​	2. Add parameter for URL
 
-​	<img src="/Users/qwb/Library/Application Support/typora-user-images/image-20240822233817303.png" alt="image-20240822233817303" style="zoom:50%;" />
+​	<img src="./images/jenkins-remote-trigger-2.png" alt="image-20240822233817303" style="zoom:50%;" />
 
- 3. Generate Jenkins user token
+​	3. Generate Jenkins user token
 
-    <img src="/Users/qwb/Library/Application Support/typora-user-images/image-20240822234209816.png" alt="image-20240822234209816" style="zoom: 67%;" />
+<img src="./images/jenkins-remote-trigger-3.png" alt="image-20240822234209816" style="zoom: 67%;" />
 
-​	<img src="/Users/qwb/Library/Application Support/typora-user-images/image-20240822234240932.png" alt="image-20240822234240932" style="zoom:50%;" />
+​	<img src="./images/jenkins-remote-trigger-3.1.png" alt="image-20240822234240932" style="zoom:50%;" />
 
 4. Use this token in URL like
 
