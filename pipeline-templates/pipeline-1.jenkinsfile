@@ -1,0 +1,121 @@
+pipeline {
+    agent {
+        node {
+            label 'D4CG-agent-dev'
+        }
+    }
+    environment {
+        AMANUENSIS_POD_NAME = ''
+        PCDC_ANALYSIS_TOOL_NAME = ''
+        FAILURE_STAGE = ''
+    }
+    stages {
+        stage('Branch Protection') {
+            steps {
+                script {
+                    echo "jenkins build trigger api parameter is: ${imageVersion}"
+
+                    def author = sh(script: "git log -1 --pretty=format:'%an'", returnStdout: true).trim()
+                    def message = sh(script: "git log -1 --pretty=format:'%s'", returnStdout: true).trim()
+                    def branch = sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
+
+                    echo "Author: ${author}"
+                    echo "Message: ${message}"
+                    echo "Branch: ${branch}"
+                    if (author == 'wfckl789' && branch == 'HEAD' && message.contains('Update')) {
+                        catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                            sh "exit 1"
+                        }
+                    }
+                }
+            }
+        }
+        stage('Server Env & Pods') {
+            parallel {
+                stage('Server Env') {
+                    steps {
+                        sh '''
+                            echo "Python version: $(python -V)"
+                        '''
+                    }
+                }
+                stage('Cluster Pods') {
+                    steps {
+                        sh '''
+                            whoami
+                            bash /home/ubuntu/jenkins/pipeline_scripts/cluster_info.sh
+                        '''
+                    }
+                }
+            }
+        }
+        stage('Pull Latest Github Repo') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: '2ca24544-ea09-4411-b602-e1e88ccd58e1', url: 'https://github.com/wfckl789/GraphHelper']])
+            }
+        }
+        stage('Update Pod Image Version') {
+            steps {
+                sh '''
+                    echo "jenkins build trigger api parameter is: ${serviceName} - ${imageName}"
+                    python3 /home/ubuntu/jenkins/pipeline_scripts/update_manifest_pod_version.py ${serviceName} ${imageName}
+                    sleep 1
+                    bash /home/ubuntu/jenkins/pipeline_scripts/gen3_update_pod.sh
+                    sleep 180
+
+                    AMANUENSIS_POD_NAME=$(bash /home/ubuntu/jenkins/pipeline_scripts/get_amauensis_pod_name.sh)
+                    CURRENT_POD_IMAGE=$(kubectl describe pod $AMANUENSIS_POD_NAME  | grep "Image:" | awk '{print $2}')
+                    echo $CURRENT_POD_IMAGE
+                '''
+            }
+        }
+        stage('Unit Tests') {
+            parallel {
+                stage('Amauensis') {
+                    steps {
+                        script {
+                            // Get Amauensis Pod Name
+                            AMANUENSIS_POD_NAME = sh(script: 'bash /home/ubuntu/jenkins/pipeline_scripts/get_pod_name.sh amanuensis-deployment', returnStdout: true).trim()
+                            // Execute Tests in Pod
+                            echo "Global Amauensis Pod Name: ${AMANUENSIS_POD_NAME}"
+                            sh "bash /home/ubuntu/jenkins/pipeline_scripts/run_amanuensis_tests.sh '${AMANUENSIS_POD_NAME}' > /home/ubuntu/jenkins/console_output/amanuensis/pytest.txt" 
+                        }
+                    }
+                }
+                stage('Pcdc Analysis Tools') {
+                    steps {
+                        script {
+                            // Get Pcdc Analysis Tools Pod Name
+                            PCDC_ANALYSIS_TOOL_NAME = sh(script: 'bash /home/ubuntu/jenkins/pipeline_scripts/get_pod_name.sh pcdcanalysistools-deployment', returnStdout: true).trim()
+                            // Execute Tests in Pod
+                            echo "Global Pcdcanalysistools Pod Name: ${PCDC_ANALYSIS_TOOL_NAME}"
+                            sh "bash /home/ubuntu/jenkins/pipeline_scripts/run_pcdc_analysis_tool_tests.sh '${PCDC_ANALYSIS_TOOL_NAME}' > /home/ubuntu/jenkins/console_output/pcdc_analysis_tool/pytest.txt" 
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                emailext (
+                    subject: "'Jenkins job: ${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.currentResult}'",
+                    recipientProviders: [developers(), requestor()],
+                    body: '''
+                    <pre>
+                        Pipeline Graph View: http://3.16.127.93:8080/job/${JOB_NAME}/${BUILD_NUMBER}/pipeline-graph
+                        <h3>Amanuensis Unit Tests Result: </h3>
+                        ${FILE, path="/home/ubuntu/jenkins/console_output/amanuensis/pytest.txt"}
+                        <h3>Pcdc Analysis Tool Result: </h3>
+                        ${FILE, path="/home/ubuntu/jenkins/console_output/pcdc_analysis_tool/pytest.txt"}
+                    </pre>
+                    ''',
+                    to: 'qwb221b@gmail.com',
+                    mimeType: 'text/html'
+                )
+            }
+        }
+    }
+}
