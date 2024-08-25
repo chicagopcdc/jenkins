@@ -60,7 +60,7 @@ D4CG Unit tests notes: https://docs.google.com/document/d/1jzE2blGkrQ1Rj2rkOfBZ7
 
 ## Architecture
 
-###### <img src="./images/jenkins-architecture.png" alt="jenkins-architecture" style="zoom: 200%;" />
+<img src="./images/jenkins-architecture.png" alt="jenkins-workflow" style="zoom: 200%;" />
 
 ## Workflow
 
