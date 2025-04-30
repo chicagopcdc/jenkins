@@ -1,4 +1,3 @@
-#!/bin/bash
 # pcdc kubeconfig file
 cat /home/ubuntu/Gen3Secrets/kubeconfig
 

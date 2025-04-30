@@ -9,7 +9,7 @@ POD_NAME=$1
 echo "POD_NAME: ${POD_NAME}"
 
 kubectl exec -i $POD_NAME -- sh -c "
-    cd /sheepdog/ &&
+    cd /fence/tests/login &&
     ls -a &&
-    bash run_tests.bash
+    python test_login_user.py
 "

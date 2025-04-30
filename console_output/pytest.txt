@@ -1,0 +1,47 @@
+POD_NAME: amanuensis-deployment-765cf76577-fwqcq
+.
+..
+.git
+.gitignore
+.pytest_cache
+Dockerfile
+Dockerfile.dev
+LICENSE.md
+README.md
+alembic.ini
+amanuensis
+cfg_help.py
+deployment
+migrations
+poetry.lock
+pyproject.toml
+run.py
+tests
+tests_endpoints
+wsgi.py
+Installing dependencies from lock file
+
+No dependencies to install or update
+
+Installing the current project: amanuensis (2.6.2)
+============================= test session starts ==============================
+platform linux -- Python 3.9.10, pytest-3.10.1, py-1.11.0, pluggy-1.5.0
+rootdir: /amanuensis, inifile:
+plugins: cov-2.9.0, anyio-4.3.0
+collected 27 items
+
+tests_endpoints/resources/userdatamodel/test_userdatamodel_associated_user.py . [  3%]
+.......                                                                  [ 29%]
+tests_endpoints/resources/userdatamodel/test_userdatamodel_associated_user_roles.py . [ 33%]
+.                                                                        [ 37%]
+tests_endpoints/resources/userdatamodel/test_userdatamodel_consortium_data_contributor.py . [ 40%]
+.                                                                        [ 44%]
+tests_endpoints/resources/userdatamodel/test_userdatamodel_filterset.py . [ 48%]
+.                                                                        [ 51%]
+tests_endpoints/resources/userdatamodel/test_userdatamodel_project.py .. [ 59%]
+..                                                                       [ 66%]
+tests_endpoints/resources/userdatamodel/test_userdatamodel_request.py .. [ 74%]
+...                                                                      [ 85%]
+tests_endpoints/resources/userdatamodel/test_userdatamodel_state.py .... [100%]
+
+========================== 27 passed in 0.28 seconds ===========================

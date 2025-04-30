@@ -1,5 +1,3 @@
-#!/bin/bash
-
 gen3 kube-setup-amanuensis
 sleep 5
 
