@@ -96,8 +96,9 @@ resource "aws_lb_target_group_attachment" "jenkins" {
 module "acm_cert" {
   source = "git::ssh://git@github.com/chicagopcdc/terraform_modules.git//aws/acm?ref=0.6.1"
 
-  domain_url = local.domain_url
-  app_name   = var.app_name
+  domain_url           = local.domain_url
+  app_name             = var.app_name
+  validate_certificate = true
 }
 
 resource "aws_route53_record" "jenkins" {
